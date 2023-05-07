@@ -28,7 +28,7 @@ class NewVisitorTest(unittest.TestCase):
         # Она видит, что заголовок и шапка страницы говорят 
         # о списках неотложных дел
         self.assertIn('To-Do', self.browser.title)
-        header_text = self.browser.find_element(By.TAG_NAME, 'h1')
+        header_text = self.browser.find_element(By.TAG_NAME, 'h1').text
         self.assertIn('To-Do', header_text)
 
         # Ей сразу же предлагается ввести элемент списка
@@ -50,7 +50,8 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element(By.ID, 'id_list_table')
         rows = table.find_elements(By.TAG_NAME, 'tr')
         self.assertTrue(
-            any(row.text == '1: Купить павлиньи перья' for row in rows)
+            any(row.text == '1: Купить павлиньи перья' for row in rows),
+            "Новый элемент списка не появился в таблице"
         )
 
         # Текстовое поле по-прежнему приглашает ее добавить еще один элемент.
