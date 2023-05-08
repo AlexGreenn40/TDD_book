@@ -74,7 +74,7 @@ class ListViewTest(TestCase):
         Item.objects.create(text='another itemey 1', list=other_list)
         Item.objects.create(text='another itemey 2', list=other_list)
 
-        response = self.client.get(f'/lists/{correct_list.id}')
+        response = self.client.get(f'/lists/{correct_list.id}/')
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
