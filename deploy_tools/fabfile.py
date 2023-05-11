@@ -52,7 +52,7 @@ def _update_virtualenv(source_folder):
     """обновить виртуальное окружение"""
     virtualenv_folder = source_folder + '/../virtualenv'
     if not exists(virtualenv_folder + '/bin/pip'):
-        # run(f'apt install python3.8-venv {virtualenv_folder}')
+        #run(f'apt install python3.8-venv {virtualenv_folder}')
         run(f'python3.8 -m venv {virtualenv_folder}')
     run(f'{virtualenv_folder}/bin/pip install -r {source_folder}/requirements.txt')
 
