@@ -1,5 +1,6 @@
 from lists.models import Item, List
 from django.test import TestCase
+from django.utils.html import escape
 
 ################################################################################
 class HomePageTest(TestCase):
@@ -9,16 +10,6 @@ class HomePageTest(TestCase):
         """тест: используется шаблон home.html"""
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'home.html')
-
-''' def test_display_all_list_items(self):
-        """тест: отображаются все элементы списка"""
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-
-        response = self.client.get('/')
-
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())'''
 
 
 class ListViewTest(TestCase):
@@ -77,6 +68,21 @@ class NewListTest(TestCase):
         # self.assertIn('A new list item', response.content.decode())
         # self.assertTemplateUsed(response, 'home.html')
 
+    def test_validation_errors_are_sent_back_to_home_page_template(self):
+        """тест: ошибки валидации отсылаются назад в шаблон домашней страницы"""
+
+        response = self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+        exppected_error = escape("You can't have an empty list item")
+        self.assertContains(response, exppected_error)
+
+    def test_invalid_list_items_arent_saved(self):
+        """тест: сохраняются недопустимые элементы списка"""
+        self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)
+
 class NewItemTest(TestCase):
     """тест нового элемента списка"""
 
@@ -107,5 +113,3 @@ class NewItemTest(TestCase):
         )
 
         self.assertRedirects(response, f'/lists/{correct_list.id}/')
-
-
